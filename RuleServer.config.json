@@ -1,0 +1,22 @@
+﻿{
+  "sessionModel": {
+    "directory": "../../../samples",
+    "fileName": "SImpleTest.json"
+  },
+  "authentication": {
+    "users": {
+      "enabled": true,
+      "serverConnectionKey": "mcmysqlwl",
+      "databaseProvider": "MySQL",
+      "sourceObjectName": "demo.users",
+      "userIdFieldName": "user_id",
+      "usernameFieldName": "username",
+      "passwordHashFieldName": "password_hash",
+      "passwordSaltFieldName": "password_salt",
+      "passwordSchemeFieldName": "password_scheme",
+      "displayNameFieldName": "display_name",
+      "activeFieldName": "is_active",
+      "passwordScheme": "sha256"
+    }
+  }
+}
