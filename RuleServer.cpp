@@ -5,7 +5,9 @@
 #include "ScreenData.h"
 #include "Attribute.h"
 #include "Rule.h"
-#include <crtdbg.h>
+#ifdef WIN32
+#   include <crtdbg.h>
+#endif
 #include <cstdlib>
 #include <iostream>
 #include "JSONFile.h"
@@ -15294,15 +15296,15 @@ void RuleServer::HandleMeRequest(const httplib::Request& req, httplib::Response&
 		{"authenticationMode", s.externalIdentity.enabled ? "FastForm" : "Legacy"},
 		{"created_at_utc", [&] {
 			const std::time_t t = Clock::to_time_t(s.created_at);
-			std::tm tm{};
 #if defined(_WIN32)
+			std::tm tm{};
 			gmtime_s(&tm, &t);
 #else
-			gmtime_r(&tm, &t);
+		    std::tm *tm = gmtime(&t);
 #endif
 			std::ostringstream oss;
 
-			oss << std::put_time(&tm, "%Y-%m-%dT%H:%M:%SZ");
+			oss << std::put_time(tm, "%Y-%m-%dT%H:%M:%SZ");
 
 			return oss.str();
 		}()},

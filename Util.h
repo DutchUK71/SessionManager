@@ -6,7 +6,9 @@
 #include <variant>
 #include <string>
 #include <memory>
-#include <objbase.h>
+#ifdef WIN32
+#   include <objbase.h>
+#endif
 #include <iomanip>
 #include <sstream> 
 #include <random>

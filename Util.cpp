@@ -1,5 +1,6 @@
 #include "Util.h"
 
+#ifdef WIN32
 /////////////////////////////////////////////////////////////////////////////////////////////////
 //
 // Name: GenerateGUID
@@ -35,6 +36,45 @@ string Util::GenerateGUID()
 	// Return the GUID string
 	return string(buffer);
 }
+#else
+#include <random>
+
+string Util::GenerateGUID()
+{
+    std::stringstream ss {};
+
+    static std::random_device dev {};
+    static std::mt19937 gen { dev() };
+    static std::uniform_int_distribution<decltype(gen)::result_type> dis { 0, 15 };
+    static std::uniform_int_distribution<decltype(gen)::result_type> dis2 {8, 11};
+
+    ss << std::hex;
+    auto i { 0 };
+
+    for (i = 0; i < 8; i++) {
+        ss << dis(gen);
+    }
+    ss << "-";
+    for (i = 0; i < 4; i++) {
+        ss << dis(gen);
+    }
+    ss << "-4";
+    for (i = 0; i < 3; i++) {
+        ss << dis(gen);
+    }
+    ss << "-";
+    ss << dis2(gen);
+    for (i = 0; i < 3; i++) {
+        ss << dis(gen);
+    }
+    ss << "-";
+    for (i = 0; i < 12; i++) {
+        ss << dis(gen);
+    };
+
+    return ss.str();
+}
+#endif
 
 string Util::ToUpper(std::string& str)
 {

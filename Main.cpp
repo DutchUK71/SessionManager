@@ -1,7 +1,9 @@
 #include "httplib.h"
 #include "Attribute.h"
 #include "Rule.h"
-#include <crtdbg.h>
+#ifdef WIN32
+#   include <crtdbg.h>
+#endif
 #include <cstdlib>
 #include <iostream>
 #include "json.hpp"
@@ -26,7 +28,9 @@ int main()
 	rs.StartServer();
 
 	// Enable memory leak detection
+#ifdef WIN32
     _CrtSetDbgFlag(_CRTDBG_ALLOC_MEM_DF | _CRTDBG_LEAK_CHECK_DF);
+#endif
 
 	return 0;
 }
