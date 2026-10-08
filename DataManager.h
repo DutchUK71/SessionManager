@@ -2,12 +2,12 @@
 
 #include <memory>
 #include <vector>
-#include "Attribute.h"
+#include "Rules/Attribute.h"
 #include "ScreenData.h"
 #include "ScreenFile.h"
-#include "Rule.h"
-#include "Entity.h"
-#include "RuleSet.h"
+#include "Rules/Rule.h"
+#include "Rules/Entity.h"
+#include "Rules/RuleSet.h"
 #include "Summary.h"
 
 class DataManager

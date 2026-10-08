@@ -1,9 +1,9 @@
 #include "SessionModelRuleEvaluator.h"
 
-#include "Attribute.h"
+#include "Rules/Attribute.h"
 #include "DataManager.h"
-#include "Entity.h"
-#include "Instance.h"
+#include "Rules/Entity.h"
+#include "Rules/Instance.h"
 #include "SessionModelExpressionParserSupport.h"
 #include "SessionModelTemporalDateTimeSupport.h"
 #include "SessionModelTemporalFunctionCatalog.h"

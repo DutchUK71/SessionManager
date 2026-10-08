@@ -3,17 +3,17 @@
 #include "httplib.h"
 #include "json.hpp"
 #include "ScreenData.h"
-#include "Attribute.h"
-#include "Rule.h"
+#include "Rules/Attribute.h"
+#include "Rules/Rule.h"
 #ifdef WIN32
 #   include <crtdbg.h>
 #endif
 #include <cstdlib>
 #include <iostream>
 #include "JSONFile.h"
-#include "Date.h"
+#include "Rules/Date.h"
 #include "DataManager.h"
-#include "RuleSet.h"
+#include "Rules/RuleSet.h"
 #include "RuleServer.h"
 #include <algorithm>
 #include <cctype>
@@ -30,9 +30,9 @@
 #include <unordered_map>
 #include <unordered_set>
 #include "ScreenFile.h"
-#include "Entity.h"
+#include "Rules/Entity.h"
 #include "Summary.h"
-#include "FunctionRule.h"
+#include "Rules/FunctionRule.h"
 #include "SessionModelImporter.h"
 #include "SessionModelRuleEvaluator.h"
 #include "PdfTemplateResolver.h"

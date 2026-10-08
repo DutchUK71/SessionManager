@@ -1,7 +1,7 @@
 #pragma once
 
-#include "Attribute.h"
-#include "RuleSet.h"
+#include "Rules/Attribute.h"
+#include "Rules/RuleSet.h"
 
 #include <vector>
 

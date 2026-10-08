@@ -1,8 +1,8 @@
 #include "PdfTemplateResolver.h"
 
-#include "Entity.h"
-#include "Instance.h"
-#include "Relationship.h"
+#include "Rules/Entity.h"
+#include "Rules/Instance.h"
+#include "Rules/Relationship.h"
 
 #include <algorithm>
 #include <cctype>

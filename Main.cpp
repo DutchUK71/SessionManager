@@ -1,6 +1,6 @@
 #include "httplib.h"
-#include "Attribute.h"
-#include "Rule.h"
+#include "Rules/Attribute.h"
+#include "Rules/Rule.h"
 #ifdef WIN32
 #   include <crtdbg.h>
 #endif
@@ -8,11 +8,11 @@
 #include <iostream>
 #include "json.hpp"
 #include "JSONFile.h"
-#include "Date.h"
+#include "Rules/Date.h"
 #include "ScreenFile.h"
 #include "ScreenData.h"
 #include "DataManager.h"
-#include "RuleSet.h"
+#include "Rules/RuleSet.h"
 #include "RuleServer.h"
 
 #define _CRTDBG_MAP_ALLOC

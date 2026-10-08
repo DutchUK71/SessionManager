@@ -1,7 +1,7 @@
 #pragma once
 
 #include <memory>
-#include "Instance.h"
+#include "Rules/Instance.h"
 
 class Functions
 {

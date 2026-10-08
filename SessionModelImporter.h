@@ -1,7 +1,7 @@
 #pragma once
 
 #include "json.hpp"
-#include "RuleSet.h"
+#include "Rules/RuleSet.h"
 
 #include <algorithm>
 #include <string>

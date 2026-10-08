@@ -4,22 +4,21 @@ project(SessionManager LANGUAGES CXX)
 set(CMAKE_CXX_STANDARD 23)
 
 add_executable(${PROJECT_NAME}
-    Condition.cpp
-    Instance.cpp
-    Relationship.cpp
-    Rule.cpp
-    Attribute.cpp
+    Rules/Condition.cpp
+    Rules/Instance.cpp
+    Rules/Rule.cpp
+    Rules/Attribute.cpp
     DataManager.cpp
     EmailCommandResolver.cpp
-    Date.cpp
-    Entity.cpp
-    FunctionRule.cpp
+    Rules/Date.cpp
+    Rules/Entity.cpp
+    Rules/FunctionRule.cpp
     Functions.cpp
     JSONFile.cpp
     PdfTemplateResolver.cpp
     Main.cpp
     RuleServer.cpp
-    RuleSet.cpp
+    Rules/RuleSet.cpp
     ScreenData.cpp
     ScreenFile.cpp
     SessionModelImporter.cpp
@@ -31,4 +30,10 @@ add_executable(${PROJECT_NAME}
     SessionModelTemporalFunctionCatalog.cpp
     Summary.cpp
     Util.cpp
+)
+
+target_include_directories(
+    ${PROJECT_NAME} PRIVATE
+        ${CMAKE_SOURCE_DIR}
+        #Rules
 )
