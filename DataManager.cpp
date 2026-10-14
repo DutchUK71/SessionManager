@@ -3193,5 +3193,154 @@ void DataManager::Copy(shared_ptr<Instance> sourceInstance, shared_ptr<Instance>
 	}
 }
 
+shared_ptr<ScreenFile::Screen> DataManager::HandleData(SessionEngine::ISessionState& sessionState,
+                                                      SessionEngine::IRuleEngine& ruleEngine,
+                                                      shared_ptr<ScreenData::DataRoot> data,
+                                                      shared_ptr<ScreenFile::Screen> screen,
+                                                      shared_ptr<ScreenFile::ScreenData> screens,
+                                                      string directTo)
+{
+    std::vector<SessionEngine::AttributeMutation> mutations;
+
+    if(data != nullptr)
+    {
+        for(const auto& input : data->data)
+        {
+            string entityId = data->entityId.empty() && screen != nullptr ? screen->entityId : data->entityId;
+            string instanceId = data->instanceId;
+            if(instanceId.empty())
+            {
+                instanceId = GetFirstInstanceId(sessionState, entityId);
+            }
+            UpdateAttributeValue(sessionState, input.attributeId, entityId, instanceId, input.value, screen != nullptr ? screen->id : "");
+            SessionEngine::AttributeMutation mutation;
+            mutation.entityId = entityId;
+            mutation.instanceId = instanceId;
+            mutation.attributeId = input.attributeId;
+            mutation.rawValue = input.value;
+            mutations.push_back(mutation);
+        }
+    }
+
+    ruleEngine.Evaluate(sessionState, mutations);
+
+    auto targetScreenOpt = ruleEngine.ResolveNextScreen(sessionState, directTo);
+    string nextScreenId = targetScreenOpt.has_value() ? targetScreenOpt.value() : (data != nullptr ? data->nextScreenId : "");
+
+    if(nextScreenId.empty() && screens != nullptr && screen != nullptr)
+    {
+        auto next = GetNextScreen(screens, screen->id, screen->entityId);
+        if(next != nullptr)
+        {
+            nextScreenId = next->id;
+        }
+    }
+
+    return GetScreenByID(screens, nextScreenId);
+}
+
+void DataManager::UpdateAttributeValue(SessionEngine::ISessionState& sessionState, const string& attributeId, const string& entityId, const string& instanceId, const string& strValue, const string& screenId)
+{
+    auto instance = sessionState.GetInstance(entityId, instanceId);
+    if(instance == nullptr)
+    {
+        instance = sessionState.CreateInstance(entityId);
+    }
+    if(instance != nullptr)
+    {
+        instance->SetAttributeValue(attributeId, strValue);
+    }
+}
+
+void DataManager::DeleteInstance(string entityId, string instanceId, SessionEngine::ISessionState& sessionState)
+{
+    sessionState.DeleteInstance(entityId, instanceId);
+}
+
+void DataManager::Copy(const string& sourceInstanceId, const string& targetInstanceId, SessionEngine::ISessionState& sessionState)
+{
+    sessionState.CopyInstanceData(sourceInstanceId, targetInstanceId);
+}
+
+string DataManager::GetFirstInstanceId(const SessionEngine::ISessionState& sessionState, const string& entityId)
+{
+    auto instances = sessionState.GetAllInstances(entityId);
+    if(!instances.empty() && instances[0] != nullptr)
+    {
+        return instances[0]->GetInstanceId();
+    }
+    return "";
+}
+
+Summary::SummaryData DataManager::GetSummaryData(const SessionEngine::ISessionState& sessionState,
+    const ScreenFile::ScreenData* screens,
+    const string& scopeEntityId,
+    const string& scopeInstanceId)
+{
+    Summary::SummaryData summaryData;
+    std::vector<Summary::SummaryGroup> groups;
+    std::vector<Summary::SummaryEntity> entities;
+
+    auto entityIds = sessionState.GetEntityIds();
+    for(const auto& entityId : entityIds)
+    {
+        if(!scopeEntityId.empty() && entityId != scopeEntityId)
+        {
+            continue;
+        }
+
+        Summary::SummaryEntity summaryEntity;
+        summaryEntity.entityId = entityId;
+        summaryEntity.entityName = entityId;
+        std::vector<Summary::SummaryInstance> summaryInstances;
+
+        auto instances = sessionState.GetAllInstances(entityId);
+        for(const auto& inst : instances)
+        {
+            if(inst == nullptr) continue;
+            if(!scopeInstanceId.empty() && inst->GetInstanceId() != scopeInstanceId)
+            {
+                continue;
+            }
+
+            Summary::SummaryInstance summaryInst;
+            summaryInst.instanceId = inst->GetInstanceId();
+            summaryInst.instanceName = inst->GetInstanceId();
+            std::vector<Summary::SummaryAttribute> summaryAttrs;
+
+            Summary::SummaryGroup group;
+            group.entityId = entityId;
+            group.entityName = entityId;
+            group.instanceId = inst->GetInstanceId();
+            group.instanceName = inst->GetInstanceId();
+
+            auto attrs = inst->GetAllAttributes();
+            for(const auto& [attrId, val] : attrs)
+            {
+                Summary::SummaryAttribute sa;
+                sa.attributeId = attrId;
+                sa.name = attrId;
+                sa.value = val;
+                sa.entityId = entityId;
+                sa.instanceId = inst->GetInstanceId();
+                summaryAttrs.push_back(sa);
+            }
+
+            summaryInst.attributes = summaryAttrs;
+            summaryInstances.push_back(summaryInst);
+
+            group.attributes = summaryAttrs;
+            groups.push_back(group);
+        }
+
+        summaryEntity.instances = summaryInstances;
+        entities.push_back(summaryEntity);
+    }
+
+    summaryData.groups = groups;
+    summaryData.entities = entities;
+    return summaryData;
+}
+
 
 

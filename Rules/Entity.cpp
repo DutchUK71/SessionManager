@@ -1,5 +1,4 @@
 #include "Entity.h"
-#include "RuleServer.h"
 #include "Functions.h"
 #include "json.hpp"
 
@@ -285,26 +284,21 @@ void Entity::RemoveInstanceById(string instanceId, shared_ptr<vector<shared_ptr<
 
 shared_ptr<Instance> Entity::GetCleanInstance()
 {
-	if(useRuntimeDefinitionsForInstances)
+	shared_ptr<Instance> instance = make_shared<Instance>();
+
+	instance->entityId = entityid;
+
+	instance->attributes = CreateAttributesDeepCopy();
+
+	for(const shared_ptr<Attribute>& attribute : instance->attributes)
 	{
-		shared_ptr<Instance> instance = make_shared<Instance>();
-
-		instance->entityId = entityid;
-
-		instance->attributes = CreateAttributesDeepCopy();
-
-		for(const shared_ptr<Attribute>& attribute : instance->attributes)
+		if(attribute != nullptr)
 		{
-			if(attribute != nullptr)
-			{
-				attribute->instance = instance;
-			}
+			attribute->instance = instance;
 		}
-
-		return instance;
 	}
 
-	shared_ptr<Instance> instance = RuleServer::GetCleanInstance(entityid);
+	instance->rules = CreateRulesDeepCopy();
 
 	return instance;
 }

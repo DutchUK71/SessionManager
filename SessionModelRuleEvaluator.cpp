@@ -1,7 +1,6 @@
 #include "SessionModelRuleEvaluator.h"
 
 #include "Rules/Attribute.h"
-#include "DataManager.h"
 #include "Rules/Entity.h"
 #include "Rules/Instance.h"
 #include "SessionModelExpressionParserSupport.h"
@@ -992,9 +991,20 @@ namespace
 
 	std::shared_ptr<Entity> FindEntity(const RuleSet& ruleSet, const std::string& entityId)
 	{
-		DataManager dataManager;
+		if(ruleSet.entities == nullptr)
+		{
+			return nullptr;
+		}
 
-		return dataManager.GetEntityByID(ruleSet.entities, entityId);
+		for(const std::shared_ptr<Entity>& entity : *ruleSet.entities)
+		{
+			if(entity != nullptr && entity->entityid == entityId)
+			{
+				return entity;
+			}
+		}
+
+		return nullptr;
 	}
 
 	std::shared_ptr<Instance> FindInstance(const RuleSet& ruleSet, const std::string& entityId, const std::string& instanceId)
@@ -1130,15 +1140,14 @@ namespace
 			return nullptr;
 		}
 
-		const std::string normalizedIdentifier = NormalizeLookup(identifier);
-		DataManager dataManager;
-		std::shared_ptr<Entity> exactEntity = dataManager.GetEntityByID(ruleSet.entities, identifier);
+		std::shared_ptr<Entity> exactEntity = FindEntity(ruleSet, identifier);
 
 		if(exactEntity != nullptr)
 		{
 			return exactEntity;
 		}
 
+		const std::string normalizedIdentifier = NormalizeLookup(identifier);
 		for(const std::shared_ptr<Entity>& entity : *ruleSet.entities)
 		{
 			if(entity != nullptr && (NormalizeLookup(entity->entityid) == normalizedIdentifier || NormalizeLookup(entity->description) == normalizedIdentifier))
